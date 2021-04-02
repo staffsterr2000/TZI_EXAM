@@ -9,6 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Application {
+    // знайти числа за критеріями: просте, взаємно просте з f. Вибрати одне наосліп
+    public static Integer getRandomPrimeNumber(int f) {
+        if (f < 2) throw new IllegalStateException("less than 2");
+        List<Integer> primeNumbers = new ArrayList<>();
+
+        for (int e = 2; e < f; e++) {
+            if (isNumberPrime(e) && isBothPrime(e, f)) primeNumbers.add(e);
+        }
+
+        return primeNumbers.get((int) (Math.random() * primeNumbers.size()));
+    }
+
+    // перевірка на простоту
     public static boolean isNumberPrime(int number) {
         if (number >= 2) {
             for (int i = 2; i < number; i++) {
@@ -22,22 +35,12 @@ public class Application {
         return true;
     }
 
-    public static Integer getRandomPrimeNumber(int f) {
-        if (f < 2) throw new IllegalStateException("less than 2");
-        List<Integer> primeNumbers = new ArrayList<>();
-
-        for (int e = 2; e < f; e++) {
-            if (isNumberPrime(e) && isSimpleBoth(e, f)) primeNumbers.add(e);
-        }
-
-        return primeNumbers.get((int) (Math.random() * primeNumbers.size()));
-    }
-
-    // взаємно прості
-    public static boolean isSimpleBoth(int e, int f) {
+    // перевірка на взаємну простоту чисел
+    public static boolean isBothPrime(int e, int f) {
         return !(f % e == 0 || e % f == 0);
     }
 
+    // взяти обернене число (d) до e за модулем f
     public static Integer getD(int e, int f) {
         int d = 1;
 
@@ -53,11 +56,13 @@ public class Application {
             // metadata Roshchenko = 18, Stanislav = 19, Ihorovich = 10
             int X = 18, C = 19, B = 10;
 
+            // зчитування з консолі
             System.out.println("Enter p:");
             int p = Integer.parseInt(console.readLine());
             System.out.println("Enter q:");
             int q = Integer.parseInt(console.readLine());
 
+            // розрахунок змінних
             int n = p * q;
             System.out.printf("n = %d%n", n);
             int f = (p - 1) * (q - 1);
@@ -69,12 +74,14 @@ public class Application {
 
             System.out.println();
 
+            // шифрування
             int encryptedX = encryptAndPrint(X, 'X', e, n);
             int encryptedC = encryptAndPrint(C, 'C', e, n);
             int encryptedB = encryptAndPrint(B, 'B', e, n);
 
             System.out.println();
 
+            // дешифрування
             int decryptedX = decryptAndPrint(encryptedX, 'X', d, n);
             int decryptedC = decryptAndPrint(encryptedC, 'C', d, n);
             int decryptedB = decryptAndPrint(encryptedB, 'B', d, n);
@@ -85,12 +92,14 @@ public class Application {
         }
     }
 
+    // шифрування та вивід до консолі
     public static int encryptAndPrint(int numberToEncrypt, char letter, int e, int n) {
         int encrypted = BigDecimal.valueOf(numberToEncrypt).pow(e).toBigInteger().mod(BigInteger.valueOf(n)).intValue();
         System.out.printf("Відкритий текст m(%c) = %d; Шифр c(%1$c) = %d;%n", letter, numberToEncrypt, encrypted);
         return encrypted;
     }
 
+    // дешифрування та вивід до консолі
     public static int decryptAndPrint(int numberToDecrypt, char letter, int d, int n) {
         int decrypted = BigDecimal.valueOf(numberToDecrypt).pow(d).toBigInteger().mod(BigInteger.valueOf(n)).intValue();
         System.out.printf("Шифрований текст c(%c) = %d; Дешифрований текст(%1$c) = %d;%n", letter, numberToDecrypt, decrypted);
