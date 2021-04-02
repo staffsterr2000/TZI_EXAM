@@ -37,7 +37,7 @@ public class Application {
 
     // перевірка на взаємну простоту чисел
     public static boolean isBothPrime(int e, int f) {
-        return !(f % e == 0 || e % f == 0);
+        return !(f % e == 0 || e % f == 0) ;
     }
 
     // взяти обернене число (d) до e за модулем f

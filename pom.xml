@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>kpp3maven</artifactId>
+    <artifactId>tzi_exam</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <build>
@@ -16,7 +16,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.stas.word.Application</mainClass>
+                            <mainClass>com.kn171.roshchenko.Application</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
