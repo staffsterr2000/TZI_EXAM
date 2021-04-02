@@ -3,6 +3,8 @@ package com.kn171.roshchenko;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,25 +26,26 @@ public class Application {
         if (f < 2) throw new IllegalStateException("less than 2");
         List<Integer> primeNumbers = new ArrayList<>();
 
-        for (int i = 2; i < f; i++) {
-            if (isNumberPrime(i)) primeNumbers.add(i);
+        for (int e = 2; e < f; e++) {
+            if (isNumberPrime(e) && isSimpleBoth(e, f)) primeNumbers.add(e);
         }
 
         return primeNumbers.get((int) (Math.random() * primeNumbers.size()));
     }
 
+    // взаємно прості
+    public static boolean isSimpleBoth(int e, int f) {
+        return !(f % e == 0 || e % f == 0);
+    }
+
     public static Integer getD(int e, int f) {
         int d = 1;
 
-        while ((d * e) % f != 1) {
-            for (int i = 2; i < Math.sqrt(d); i++) {
-                if (d % i == 0) {
-                    d++;
-                }
-            }
+        while (d < Integer.MAX_VALUE) {
+            if ((++d * e) % f == 1) return d;
         }
 
-        return d;
+        throw new IllegalStateException("No such d");
     }
 
     public static void main(String[] args) {
@@ -50,40 +53,48 @@ public class Application {
             // metadata Roshchenko = 18, Stanislav = 19, Ihorovich = 10
             int X = 18, C = 19, B = 10;
 
-//            System.out.println("Enter p:");
-//            int p = Integer.parseInt(console.readLine());
-//            System.out.println("Enter q:");
-//            int q = Integer.parseInt(console.readLine());
-
-            int p = 3;
-            int q = 11;
+            System.out.println("Enter p:");
+            int p = Integer.parseInt(console.readLine());
+            System.out.println("Enter q:");
+            int q = Integer.parseInt(console.readLine());
 
             int n = p * q;
+            System.out.printf("n = %d%n", n);
             int f = (p - 1) * (q - 1);
+            System.out.printf("f = %d%n", f);
             int e = getRandomPrimeNumber(f);
+            System.out.printf("e = %d%n", e);
             int d = getD(e, f);
+            System.out.printf("d = %d%n", d);
 
-            String patternToEncrypt = "Відкритий текст m(%1$s) = %d; Шифр c(%1$s) = %d";
-            String patternToDecrypt = "Шифрований текст m(%1$s) = %d; Дешифрований текст(%1$s) = %d; Оригінальний текст = (%d)";
+            System.out.println();
 
-            int encryptedX = (int) Math.pow(X, e) % n;
-            System.out.printf(patternToEncrypt, "X", X, encryptedX);
-            int encryptedC = (int) Math.pow(C, e) % n;
-            System.out.printf(patternToEncrypt, "C", C, encryptedC);
-            int encryptedB = (int) Math.pow(B, e) % n;
-            System.out.printf(patternToEncrypt, "B", B, encryptedB);
+            int encryptedX = encryptAndPrint(X, 'X', e, n);
+            int encryptedC = encryptAndPrint(C, 'C', e, n);
+            int encryptedB = encryptAndPrint(B, 'B', e, n);
 
+            System.out.println();
 
-            int decryptedX = (int) Math.pow(encryptedX, d) % n;
-            System.out.printf(patternToDecrypt, "X", encryptedX, decryptedX, X);
-            int decryptedC = (int) Math.pow(encryptedC, d) % n;
-            System.out.printf(patternToDecrypt, "C", encryptedC, decryptedC, C);
-            int decryptedB = (int) Math.pow(encryptedB, d) % n;
-            System.out.printf(patternToDecrypt, "B", encryptedB, decryptedB, B);
+            int decryptedX = decryptAndPrint(encryptedX, 'X', d, n);
+            int decryptedC = decryptAndPrint(encryptedC, 'C', d, n);
+            int decryptedB = decryptAndPrint(encryptedB, 'B', d, n);
 
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    public static int encryptAndPrint(int numberToEncrypt, char letter, int e, int n) {
+        int encrypted = BigDecimal.valueOf(numberToEncrypt).pow(e).toBigInteger().mod(BigInteger.valueOf(n)).intValue();
+        System.out.printf("Відкритий текст m(%c) = %d; Шифр c(%1$c) = %d;%n", letter, numberToEncrypt, encrypted);
+        return encrypted;
+    }
+
+    public static int decryptAndPrint(int numberToDecrypt, char letter, int d, int n) {
+        int decrypted = BigDecimal.valueOf(numberToDecrypt).pow(d).toBigInteger().mod(BigInteger.valueOf(n)).intValue();
+        System.out.printf("Шифрований текст c(%c) = %d; Дешифрований текст(%1$c) = %d;%n", letter, numberToDecrypt, decrypted);
+        return decrypted;
+    }
+
 }
